@@ -6,6 +6,70 @@
 
 This might be a deal breaker for FCIS.  The installation requires it.
 
+#### On Ubuntu with NVIDIA GPU
+
+My Kubuntu desktop has a NVIDIA GeForce GTX 745 system with 4 GB memory (still not as much as FCIS recommends, but better than nothing)
+
+```
+kiron@kiron-XPS-8900:~$ nvidia-smi
+Tue Oct  1 07:58:44 2019       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 390.116                Driver Version: 390.116                   |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 745     Off  | 00000000:01:00.0  On |                  N/A |
+| 21%   49C    P0    N/A /  N/A |    727MiB /  4038MiB |      1%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|    0      1092      G   /usr/lib/xorg/Xorg                           325MiB |
+|    0      1478      G   kwin_x11                                      64MiB |
+|    0      1483      G   /usr/bin/krunner                              16MiB |
+|    0      1485      G   /usr/bin/plasmashell                         201MiB |
+|    0     18822      G   ...uest-channel-token=10668720831531840875    59MiB |
+|    0     19158      G   /usr/bin/systemsettings5                      30MiB |
+|    0     21297      G   ...-token=2D75ED3F2C7FA6576E00C4B60A1A3325    23MiB |
++-----------------------------------------------------------------------------+
+```
+
+#### Installing the CUDA 9.2 Toolkit
+
+If you type ```nvcc``` at a terminal and get this message, you don't have the toolkit installed
+```
+kiron@kiron-XPS-8900:~/dev/InstanceSegmentation_Sentinel2$ nvcc
+
+Command 'nvcc' not found, but can be installed with:
+
+sudo apt install nvidia-cuda-toolkit
+```
+While it is possible to use ```apt``` to install CUDA, this [link](https://askubuntu.com/questions/799184/how-can-i-install-cuda-on-ubuntu-16-04) doesn't recommend it because "Notes: Yes, there is the possibility to install it via apt-get install cuda. I strongly suggest not to use it, as it changes the paths and makes the installation of other tools more difficult."
+
+
+MXNet recommended version 9.2 of the toolit (which is a legacy download as of Oct 1, 2019).  I downloaded the local .deb at around 1.2 GB.  Instructions [here](https://developer.nvidia.com/cuda-92-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1710&target_type=deblocal)
+
+
+In trying to follow their instructions, this is where I left off:
+
+```
+Unpacking cuda (9.2.148-1) ...
+Errors were encountered while processing:
+ /tmp/apt-dpkg-install-lXty4J/098-nvidia-396_396.37-0ubuntu1_amd64.deb
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+```
+
+
+
+
+## Install FCIS
+
+
+
+
 
 ```
 git clone https://github.com/msracver/FCIS.git
