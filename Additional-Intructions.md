@@ -147,3 +147,96 @@ Lets assume we have a development folder at ~/dev.
 cd ~/dev
 git clone https://github.com/apache/incubator-mxnet.git
 ```
+
+
+
+## Appendix: Configuration of a Jetson TX1
+
+The NVIDIA documentation is out there, but I feel like they could have done a revision or two to make it better.  I am copy/pasting the [quick start guide](
+http://developer.download.nvidia.com/embedded/L4T/r23_Release_v1.0/l4t_quick_start_guide.txt) here, with some added notes/formatting.
+
+### NVIDIA TEGRA LINUX DRIVER PACKAGE QUICK-START GUIDE
+
+The information here is intended to help you quickly get started using NVIDIA Tegra Linux Driver package (L4T).
+
+#### ASSUMPTIONS:
+
+* You have an NVIDIA Jetson TX1 Developer Kit, equipped with the Jetson TX1 module.
+* You have a host machine that is running Linux.
+* Your developer system is cabled as follows:
+     - USB Micro-A cable connecting Jetson TX1 carrier board (USB0) to your Linux host for flashing. Note: this can be a standard micro USB phone cable, but ensure it is high quality and capable of transferring data
+     - (Not included in the developer kit) To connect USB peripherals such as keyboard and mouse, a USB hub should be connected to the USB port (USB1) on the Jetson TX1 carrier board. Note: I am using an Amazon basics externally powered hub
+
+The following directions will create a 14 GB partition on the eMMC device (internal storage) and will flash the root file system to that location.
+If you would like to have network access on your target (e.g., for installing additional packages), ensure an Ethernet cable is attached to the Jetson TX1 carrier board.
+
+### INSTRUCTIONS:
+
+#### Download and prepare the files
+
+Download the latest L4T release package for your developer system and the sample file system from https://developer.nvidia.com/linux-tegra
+
+Note: Download the L4T Driver Package (BSP) (~150 MB) and the Sample Root Filesystem (1.2 GB)
+
+If NVIDIA does not yet provide public release for the developer system you have, please contact your NVIDIA support representative to obtain the latest L4T release package for use with the developer board.
+
+Untar the files and assemble the rootfs (this took quite a while for me):
+
+```
+sudo tar xpf Tegra210_Linux_R23.1.1_armhf.tbz2 
+cd Linux_for_Tegra/rootfs/ 
+sudo tar xpf ../../Tegra_Linux_Sample-Root-Filesystem_R23.1.1_armhf.tbz2 
+cd ../ sudo ./apply_binaries.sh
+```
+
+#### Flash the rootfs onto the system's internal eMMC.
+
+a) Put your system into "reset recovery mode" by holding down the REC (S3) button and press the RST (S1) button once on the carrier board. b) Ensure your Linux host system is connected to the carrier board through the USB Micro-A cable. The flashing command is:
+
+```
+sudo ./flash.sh jetson-tx1 mmcblk0p1
+```
+
+This will take several minutes. (It took me about 10 minutes)
+
+you will see this:
+
+```
+[ 627.9690 ] Flashing completed
+
+[ 627.9690 ] Coldbooting the device
+[ 628.1034 ] tegradevflash --reboot coldboot
+[ 628.1062 ] Cboot version 00.01.0000
+[ 628.1089 ] 
+*** The target t210ref has been flashed successfully. ***
+Reset the board to boot from internal eMMC.
+
+```
+
+The target will automatically reboot upon completion of the flash (I just power cycled for good measure -- hold down power for 10 seconds, wait 10 seconds, then press power again).
+
+You now have Linux running on your developer system. Depending on the sample file system used, you will see one of the following on the screen:
+
+The Ubuntu graphical desktop. (this is what I saw, and I configured my username/password, language, then the configuration window went missing, and my graphical desktop had literally nothing on it, and no taskbar)
+
+The command prompt. Log in as user login:ubuntu and password:ubuntu. See step 5 if you wish to configure the graphical desktop on your setup.
+
+#### Installing the graphical desktop on your target board (if not already installed):
+
+a) Connect Ethernet to target via the RJ45 connector.
+
+b) Acquire an IP address:
+
+sudo dhclient <interface>
+
+where <interface> is eth0.
+
+c) Check to see if Ethernet is up and running. You should see an IP address associated with eth0.
+
+ifconfig sudo apt-get update sudo apt-get install ubuntu-desktop
+
+d) Reboot and the system will boot to the graphical desktop.
+
+NOTE: the above steps can be used to install other packages with "sudo apt-get install".
+
+Please refer to the release notes provided with your software for up-to-date information on platform features and use.
