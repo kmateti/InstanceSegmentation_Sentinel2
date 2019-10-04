@@ -157,7 +157,7 @@ http://developer.download.nvidia.com/embedded/L4T/r23_Release_v1.0/l4t_quick_sta
 
 ### NVIDIA TEGRA LINUX DRIVER PACKAGE QUICK-START GUIDE
 
-The information here is intended to help you quickly get started using NVIDIA Tegra Linux Driver package (L4T).
+The information here is intended to help you quickly get started using NVIDIA Tegra Linux Driver package (L4T).  Also, if the SDK Manager's file are ona non-ext4 drive, it will have the same failures.  But the SDK Manager's settings do not allow you to specify where the files are downloaded.
 
 #### ASSUMPTIONS:
 
@@ -171,6 +171,8 @@ The following directions will create a 14 GB partition on the eMMC device (inter
 If you would like to have network access on your target (e.g., for installing additional packages), ensure an Ethernet cable is attached to the Jetson TX1 carrier board.
 
 ### INSTRUCTIONS:
+
+HUGE NOTE: All the downloaded files need to be put on a hard drive that is ```ext4``` - if this is not followed, you will have a broken install on your TX1.
 
 #### Download and prepare the files
 
@@ -186,7 +188,8 @@ Untar the files and assemble the rootfs (this took quite a while for me):
 sudo tar xpf Tegra210_Linux_R23.1.1_armhf.tbz2 
 cd Linux_for_Tegra/rootfs/ 
 sudo tar xpf ../../Tegra_Linux_Sample-Root-Filesystem_R23.1.1_armhf.tbz2 
-cd ../ sudo ./apply_binaries.sh
+cd ../ 
+sudo ./apply_binaries.sh
 ```
 
 #### Flash the rootfs onto the system's internal eMMC.
@@ -197,17 +200,22 @@ a) Put your system into "reset recovery mode" by holding down the REC (S3) butto
 sudo ./flash.sh jetson-tx1 mmcblk0p1
 ```
 
-This will take several minutes. (It took me about 10 minutes)
+This will take several minutes. (Started 7:37 AM -- had breakfast, came back down at 8 AM and it was done...)
 
 you will see this:
 
 ```
-[ 627.9690 ] Flashing completed
+[ 157.5007 ] tegradevflash --write BCT P2180_A00_LP4_DSC_204Mhz.bct
+[ 157.5021 ] Cboot version 00.01.0000
+[ 157.5043 ] Writing partition BCT with P2180_A00_LP4_DSC_204Mhz.bct
+[ 157.5049 ] [................................................] 100%
+[ 157.9248 ] 
+[ 157.9249 ] Flashing completed
 
-[ 627.9690 ] Coldbooting the device
-[ 628.1034 ] tegradevflash --reboot coldboot
-[ 628.1062 ] Cboot version 00.01.0000
-[ 628.1089 ] 
+[ 157.9250 ] Coldbooting the device
+[ 157.9266 ] tegradevflash --reboot coldboot
+[ 157.9286 ] Cboot version 00.01.0000
+[ 157.9313 ] 
 *** The target t210ref has been flashed successfully. ***
 Reset the board to boot from internal eMMC.
 
@@ -217,7 +225,11 @@ The target will automatically reboot upon completion of the flash (I just power 
 
 You now have Linux running on your developer system. Depending on the sample file system used, you will see one of the following on the screen:
 
-The Ubuntu graphical desktop. (this is what I saw, and I configured my username/password, language, then the configuration window went missing, and my graphical desktop had literally nothing on it, and no taskbar)
+The Ubuntu graphical desktop. 
+
+Notes: Before the ext4 correction, this is what I saw, and I configured my username/password, language, then the configuration window went missing, and my graphical desktop had literally nothing on it, and no taskbar.
+
+After the ext4 change, there were two more dialogs that showed progress, and the setup properly finished and then rebooted.  Wow, nowhere in the documentation is that expressed.
 
 The command prompt. Log in as user login:ubuntu and password:ubuntu. See step 5 if you wish to configure the graphical desktop on your setup.
 
@@ -240,3 +252,6 @@ d) Reboot and the system will boot to the graphical desktop.
 NOTE: the above steps can be used to install other packages with "sudo apt-get install".
 
 Please refer to the release notes provided with your software for up-to-date information on platform features and use.
+
+
+#### Installing CUDA Toolkit on Jetson (TODO)
